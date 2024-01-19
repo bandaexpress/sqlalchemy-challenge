@@ -79,20 +79,23 @@ def stations():
 # Query the dates and temperature observations of the most-active station for the previous year of data. Return a JSON list of temperature observations for the previous year.
 @app.route("/api/v1.0/tobs")
 def tobs():
-      tobs = session.query(Measurements.date,  Measurements.tobs,Measurements.prcp).\
-                filter(Measurements.date >= one_year_ago).\
-                filter(Measurements.station == most_active_station).\
-                order_by(Measurements.date).all()
-      # Convert the list to Dictionary
-      all_tobs = []
-      for prcp, date,tobs in tobs:
-            tobs_dict = {}
-            tobs_dict["prcp"] = prcp
-            tobs_dict["date"] = date
-            tobs_dict["tobs"] = tobs
-            
-            all_tobs.append(tobs_dict)
-            return jsonify(all_tobs)
+    tobs = session.query(Measurements.date, Measurements.tobs, Measurements.prcp).\
+        filter(Measurements.date <= '2016-08-23').\
+        filter(Measurements.station == 'USC00519281').\
+        order_by(Measurements.date).all()
+    
+    # Convert the list to Dictionary
+    all_tobs = []
+    for prcp, date, tobs in tobs:
+        tobs_dict = {}
+        tobs_dict["prcp"] = prcp
+        tobs_dict["date"] = date
+        tobs_dict["tobs"] = tobs
+        
+        all_tobs.append(tobs_dict)
+    
+    return jsonify(all_tobs)
+
 
 # Return a JSON list of the minimum temperature, the average temperature, and the maximum temperature for a specified start or start-end range.Calculate TMIN, TAVG, and TMAX for all the dates greater than or equal to the start date.
 
